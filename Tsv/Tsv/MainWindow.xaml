@@ -1,0 +1,171 @@
+﻿<Controls:MetroWindow x:Class="Tsv.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:Controls="http://metro.mahapps.com/winfx/xaml/controls"
+        xmlns:local="clr-namespace:Tsv"
+        xmlns:Dialog="clr-namespace:MahApps.Metro.Controls.Dialogs;assembly=MahApps.Metro"
+        xmlns:simpleChildWindow="clr-namespace:MahApps.Metro.SimpleChildWindow;assembly=MahApps.Metro.SimpleChildWindow"
+        xmlns:icon="http://metro.mahapps.com/winfx/xaml/iconpacks"
+        Dialog:DialogParticipation.Register="{Binding}"
+        xmlns:c="clr-namespace:Tsv.Controls"
+        mc:Ignorable="d"
+        xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
+        Title="" Height="800" Width="1200" ResizeMode="NoResize" WindowStartupLocation="CenterScreen">
+    <Controls:MetroWindow.RightWindowCommands>
+        <Controls:WindowCommands>
+            <Button>
+                <icon:PackIconModern Width="24" Height="24" Kind="Server"/>
+            </Button>
+        </Controls:WindowCommands>
+    </Controls:MetroWindow.RightWindowCommands>
+    <Grid>
+        <Grid.Resources>
+            <DataTemplate x:Key="cellTemplate">
+                <DockPanel x:Name="PART_panel">
+                    <ToggleButton x:Name="Expander" Style="{StaticResource ExpandCollapseToggleStyle}" 
+                      Margin="{Binding Path=Level,
+                               Converter={StaticResource LevelIndentConverter},
+                               RelativeSource={RelativeSource AncestorType={x:Type c:TreeListViewItem}}}"
+                      IsChecked="{Binding Path=IsExpanded,
+                                  RelativeSource={RelativeSource AncestorType={x:Type c:TreeListViewItem}}}"
+                      ClickMode="Press"/>
+                    <TextBlock Text="{Binding DataContext,RelativeSource={RelativeSource Self},Converter={StaticResource ItemConverter}}"/>
+                </DockPanel>
+                <DataTemplate.Triggers>
+                    <DataTrigger Binding="{Binding Path=HasItems,
+                                   RelativeSource={RelativeSource AncestorType={x:Type c:TreeListViewItem}}}" 
+                         Value="False">
+                        <Setter TargetName="Expander" Property="Visibility" Value="Hidden"/>
+                    </DataTrigger>
+                </DataTemplate.Triggers>
+            </DataTemplate>
+
+            <GridViewColumnCollection x:Key="gvColumns">
+                <GridViewColumn Header="Item" CellTemplate="{StaticResource cellTemplate}"/>
+                <GridViewColumn Header="Level" DisplayMemberBinding="{Binding Level}" />
+                <GridViewColumn Header="Material Cost" DisplayMemberBinding="{Binding MaterialCost,Converter={StaticResource DecimalConverter}}" />
+                <GridViewColumn Header="Manual Cost" DisplayMemberBinding="{Binding ManualCost,Converter={StaticResource DecimalConverter}}" />
+                <GridViewColumn Header="Description" DisplayMemberBinding="{Binding Description}"/>
+                <GridViewColumn Header="UOM" DisplayMemberBinding="{Binding Uom}"/>
+                <GridViewColumn Header="Quantity" DisplayMemberBinding="{Binding Quantity,Converter={StaticResource DecimalConverter}}" />
+                <GridViewColumn Header="Extended Quantity" DisplayMemberBinding="{Binding ExtendedQuantity,Converter={StaticResource DecimalConverter}}"/>
+                <GridViewColumn Header="Yield" DisplayMemberBinding="{Binding Yield,Converter={StaticResource DecimalConverter}}"/>
+                <GridViewColumn Header="Unit Cost" DisplayMemberBinding="{Binding UnitCost,Converter={StaticResource DecimalConverter}}" />
+                <GridViewColumn Header="Extended Cost" DisplayMemberBinding="{Binding ExtendedCost,Converter={StaticResource DecimalConverter}}" />
+            </GridViewColumnCollection>
+
+        </Grid.Resources>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="135"/>
+            <ColumnDefinition Width="90*"/>
+            <ColumnDefinition Width="83"/>
+            <ColumnDefinition Width="80"/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="6"/>
+            <RowDefinition Height="32"/>
+            <RowDefinition Height="4"/>
+            <RowDefinition Height="369*"/>
+            <RowDefinition Height="16"/>
+        </Grid.RowDefinitions>
+        <simpleChildWindow:ChildWindow
+                 IsOpen="{Binding Detail.IsDetailWindowOpen}"
+                 HorizontalContentAlignment="Stretch"
+                 VerticalContentAlignment="Stretch"
+                 Padding="100,40"
+                 Grid.Column="0"
+                 Grid.Row="0"
+                 Grid.ColumnSpan="4"
+                 Grid.RowSpan="5"
+                 Title="Detail" FontWeight="Bold" Controls:ControlsHelper.ContentCharacterCasing="Upper">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="6"/>
+                    <ColumnDefinition Width="120"/>
+                    <ColumnDefinition Width="100*"/>
+                    <ColumnDefinition Width="120"/>
+                    <ColumnDefinition Width="100*"/>
+                    <ColumnDefinition Width="120"/>
+                    <ColumnDefinition Width="100*"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="6"/>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="6"/>
+                    <RowDefinition Height="34"/>
+                    <RowDefinition Height="34"/>
+                    <RowDefinition Height="34"/>
+                    <RowDefinition Height="34"/>
+                    <RowDefinition Height="200*"/>
+                    <RowDefinition Height="34"/>
+                </Grid.RowDefinitions>
+
+                <TextBlock Grid.Column="1" Grid.Row="1" Text="Item:"  Margin="3,6,3,3" />
+                <TextBox Grid.Column="2" Grid.Row="1" Margin="3" IsReadOnly="True" Text="{Binding Detail.TsvData.Item,Converter={StaticResource ItemConverter}}"/>
+
+                <TextBlock Grid.Column="3" Grid.Row="1" Text="Level:" Margin="3,6,3,3"/>
+                <TextBox Grid.Column="4" Grid.Row="1" Margin="3" IsReadOnly="True" Text="{Binding Detail.TsvData.Level}"/>
+
+                <TextBlock Grid.Column="1" Grid.Row="2" Text="Material Cost:"  Margin="3,6,3,3" />
+                <TextBox Grid.Column="2" Grid.Row="2" Margin="3" IsReadOnly="True" Text="{Binding Detail.TsvData.MaterialCost,Converter={StaticResource DecimalConverter}}"/>
+
+                <TextBlock Grid.Column="3" Grid.Row="2" Text="Manual Cost:"  Margin="3,6,3,3" />
+                <TextBox Grid.Column="4" Grid.Row="2" Margin="3" IsReadOnly="True" Text="{Binding Detail.TsvData.ManualCost,Converter={StaticResource DecimalConverter}}"/>
+
+                <TextBlock Grid.Column="1" Grid.Row="3" Text="Uom:"  Margin="3,6,3,3"/>
+                <TextBox Grid.Column="2" Grid.Row="3" Margin="3" IsReadOnly="True" Text="{Binding Detail.TsvData.Uom}"/>
+
+                <TextBlock Grid.Column="3" Grid.Row="3" Text="Quantity:"  Margin="3,6,3,3" />
+                <TextBox Grid.Column="4" Grid.Row="3" Margin="3" IsReadOnly="True" Text="{Binding Detail.TsvData.Quantity,Converter={StaticResource DecimalConverter}}"/>
+
+                <TextBlock Grid.Column="5" Grid.Row="3" Text="Extended Quantity:"  Margin="3,6,3,3" />
+                <TextBox Grid.Column="6" Grid.Row="3" Margin="3" IsReadOnly="True"  Text="{Binding Detail.TsvData.ExtendedQuantity,Converter={StaticResource DecimalConverter}}"/>
+
+                <TextBlock Grid.Column="1" Grid.Row="4" Text="Yield:"  Margin="3,6,3,3" />
+                <TextBox Grid.Column="2" Grid.Row="4" Margin="3" IsReadOnly="True"  Text="{Binding Detail.TsvData.Yield,Converter={StaticResource DecimalConverter}}"/>
+
+                <TextBlock Grid.Column="3" Grid.Row="4" Text="Unit Cost:"  Margin="3,6,3,3" />
+                <TextBox Grid.Column="4" Grid.Row="4" Margin="3" IsReadOnly="True"  Text="{Binding Detail.TsvData.UnitCost,Converter={StaticResource DecimalConverter}}"/>
+
+                <TextBlock Grid.Column="5" Grid.Row="4" Text="Extended Cost:"  Margin="3,6,3,3" />
+                <TextBox Grid.Column="6" Grid.Row="4" Margin="3" IsReadOnly="True"  Text="{Binding Detail.TsvData.ExtendedCost,Converter={StaticResource DecimalConverter}}"/>
+
+                <TextBlock Grid.Column="1" Grid.Row="5"  Text="Description:"  Margin="3,6,3,3" />
+                <TextBox Grid.Column="2" Grid.Row="5" Grid.ColumnSpan="5" Margin="3" IsReadOnly="True"  Text="{Binding Detail.TsvData.Description}"/>
+
+                <Button Grid.Column="6" Grid.Row="6" Width="70" Margin="4" HorizontalAlignment="Right" Command="{Binding Detail.CloseCmd}">OK</Button>
+            </Grid>
+        </simpleChildWindow:ChildWindow>
+        <TextBox Text="{Binding Path}"  Grid.Row="1" Controls:TextBoxHelper.Watermark="Select tsv file please" Margin="3,3,3,2" IsReadOnly="True" BorderBrush="#FF96DFFF" Grid.ColumnSpan="2"/>
+        <Button Command="{Binding ParseCmd}" HorizontalAlignment="Left"  VerticalAlignment="Top" Width="75" Grid.Column="3" Height="27" Grid.Row="1" Margin="3,3,0,0" BorderBrush="#FF96DFFF">
+            <StackPanel Orientation="Horizontal">
+                <icon:PackIconFontAwesome Width="14" Height="14" Kind="AndroidBrands"></icon:PackIconFontAwesome>
+                <TextBlock Margin="4,-2,0,0" FontSize="12" Text="Parse"/>
+            </StackPanel>
+        </Button>
+        <Button Command="{Binding ClickCmd}" HorizontalAlignment="Left" VerticalAlignment="Top" Width="75" Grid.Column="2" Height="27" Grid.Row="1" Margin="3,3,0,0" BorderBrush="#FF96DFFF">
+            <StackPanel Orientation="Horizontal">
+                <icon:PackIconFontAwesome Width="14" Height="14" Kind="SearchSolid"></icon:PackIconFontAwesome>
+                <TextBlock Margin="4,-2,0,0" FontSize="12" Text="Browse"/>
+            </StackPanel>
+        </Button>
+
+        <c:TreeListView x:Name="treeList" Background="#FFE9E9E9" BorderBrush="#FF96DFFF" ExpandAll="{Binding ExpandAll}" Columns="{StaticResource gvColumns}" Grid.Row="3" Grid.ColumnSpan="4" ItemsSource="{Binding Data}" Margin="3" Grid.RowSpan="2">
+            <c:TreeListView.ItemTemplate>
+                <HierarchicalDataTemplate ItemsSource="{Binding Children}" />
+            </c:TreeListView.ItemTemplate>
+            <i:Interaction.Triggers>
+                <i:EventTrigger EventName="RowDoubleClick">
+                    <i:InvokeCommandAction  Command="{Binding Path=OpenDetailCmd}" CommandParameter="{Binding Path=SelectedItem, ElementName=treeList}"/>
+                </i:EventTrigger>
+            </i:Interaction.Triggers>
+            <c:TreeListView.ContextMenu>
+                <ContextMenu>
+                    <MenuItem  Header="{Binding Header}" Command="{Binding ExpandAllCmd}" Visibility="{Binding Path=Data,Converter={StaticResource VisibilityConverter}}"/>
+                </ContextMenu>
+            </c:TreeListView.ContextMenu>
+        </c:TreeListView>
+    </Grid>
+</Controls:MetroWindow>

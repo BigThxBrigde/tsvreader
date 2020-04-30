@@ -1,0 +1,50 @@
+﻿indent: 10
+enableLog: true
+roundDecimal: 2
+groups:
+    - name: PTH
+      description: PTH
+      expression: |
+            new Func<TsvDataViewModel,bool>(o=>
+            {
+                var length = o.Item.Length;
+                if(length < 3) return false;
+                var c = o.Item[length-3];
+                return c == 'A';
+            })
+    - name: SMT
+      description: SMT
+      expression: |
+            new Func<TsvDataViewModel,bool>(o=>
+            {
+                var parent = o.Parent;
+                if(parent == null) return false;
+                var length = parent.Item.Length;
+                if(length < 4) return false;
+                var c1 = parent.Item[length-3];
+                var c2 = parent.Item[length-4];
+                return c1=='D' && c2 == 'S';
+            })
+    - name: Misc
+      description: Misc
+      expression: |
+            new Func<TsvDataViewModel,bool>(o=>
+            { 
+                Func<TsvDataViewModel,bool> func1 = _o => {
+                    var length = _o.Item.Length;
+                    if(length < 3) return false;
+                    var c = _o.Item[length-3];
+                    return c == 'A';
+                };
+                Func<TsvDataViewModel,bool> func2 = _o =>{
+                    var parent = _o.Parent;
+                    if(parent == null) return false;
+                    var length = parent.Item.Length;
+                    if(length < 4) return false;
+                    var c1 = parent.Item[length-3];
+                    var c2 = parent.Item[length-4];
+                    return c1=='D' && c2 == 'S';
+                };
+                
+                return !func1(o) && !func2(o);
+            })
